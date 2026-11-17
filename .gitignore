@@ -1,0 +1,33 @@
+# Private data - never commit
+records/
+models/
+vendor/
+
+# Local environment
+.venv/
+.cache/
+.tmp/
+__pycache__/
+*.pyc
+*.egg-info/
+
+# Audio and video
+*.flac
+*.wav
+*.mp3
+*.ogg
+*.opus
+*.m4a
+*.webm
+*.mkv
+*.mp4
+
+# Model files
+*.gguf
+*.bin
+*.safetensors
+*.pt
+*.onnx
+
+# Local Claude settings
+.claude/settings.local.json

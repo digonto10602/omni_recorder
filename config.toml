@@ -1,0 +1,36 @@
+# omni_recorder configuration. Model and device names live ONLY here.
+# Relative paths are resolved against the project root (the folder of this file).
+
+[paths]
+records_dir = "records"
+models_dir = "models"
+
+[audio]
+sample_rate = 48000
+# Substrings matched against PipeWire stream application names to find Chrome's sound.
+chrome_stream_match = ["Google Chrome", "Chromium", "chrome"]
+# If no Chrome stream is found, record the default output monitor (all system sound).
+fallback_to_default_monitor = true
+# "default" means the system default microphone.
+mic_source = "default"
+
+[languages]
+allowed = ["bn", "en"]
+
+[speech]
+# Placeholders: chosen by the stage 3 bake-off.
+bn_model = ""
+en_model = ""
+compute_type = ""
+device = ""
+
+[translation]
+# Placeholder: chosen by the stage 3 translation test.
+method = ""
+
+[llm]
+# Placeholders: chosen in stage 4.
+gguf_path = ""
+context_length = 16384
+n_gpu_layers = 0
+prompts_dir = "prompts/llm"
