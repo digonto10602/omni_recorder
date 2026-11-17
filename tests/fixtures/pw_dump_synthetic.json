@@ -1,0 +1,71 @@
+[
+  {"id": 0, "type": "PipeWire:Interface:Core", "info": {"props": {}}},
+  {"id": 10, "type": "PipeWire:Interface:Client", "info": {"props": {
+      "application.name": "Google Chrome input", "application.process.binary": "chrome", "application.process.id": 1111}}},
+  {"id": 11, "type": "PipeWire:Interface:Client", "info": {"props": {
+      "application.name": "Chromium input", "application.process.binary": "steamwebhelper", "application.process.id": 2222}}},
+  {"id": 12, "type": "PipeWire:Interface:Client", "info": {"props": {
+      "application.name": "SomePlayer", "application.process.binary": "someplayer", "application.process.id": 3333}}},
+  {"id": 13, "type": "PipeWire:Interface:Client", "info": {"props": {
+      "application.name": "Chromium", "application.process.id": 4444}}},
+
+  {"id": 40, "type": "PipeWire:Interface:Node", "info": {"props": {
+      "node.name": "test_sink_main", "media.class": "Audio/Sink", "object.serial": 400}}},
+  {"id": 41, "type": "PipeWire:Interface:Node", "info": {"props": {
+      "node.name": "test_mic_stereo", "media.class": "Audio/Source", "object.serial": 410}}},
+  {"id": 42, "type": "PipeWire:Interface:Node", "info": {"props": {
+      "node.name": "test_mic_mono", "media.class": "Audio/Source", "object.serial": 420}}},
+
+  {"id": 50, "type": "PipeWire:Interface:Node", "info": {"props": {
+      "node.name": "Google Chrome", "media.class": "Stream/Output/Audio", "client.id": 10,
+      "media.name": "Playback", "object.serial": 500}}},
+  {"id": 51, "type": "PipeWire:Interface:Node", "info": {"props": {
+      "node.name": "Chromium", "media.class": "Stream/Output/Audio", "client.id": 11,
+      "application.name": "Chromium", "object.serial": 510}}},
+  {"id": 52, "type": "PipeWire:Interface:Node", "info": {"props": {
+      "node.name": "Google Chrome", "media.class": "Stream/Input/Audio", "client.id": 10, "object.serial": 520}}},
+  {"id": 53, "type": "PipeWire:Interface:Node", "info": {"props": {
+      "node.name": "someplayer", "media.class": "Stream/Output/Audio", "client.id": 12, "object.serial": 530}}},
+  {"id": 54, "type": "PipeWire:Interface:Node", "info": {"props": {
+      "node.name": "Chromium", "media.class": "Stream/Output/Audio", "client.id": 13,
+      "application.name": "Chromium", "object.serial": 540}}},
+  {"id": 55, "type": "PipeWire:Interface:Node", "info": {"props": {
+      "node.name": "Google Chrome", "media.class": "Stream/Output/Audio", "client.id": 10,
+      "application.process.binary": "chrome", "media.name": "Playback", "object.serial": 550}}},
+
+  {"id": 60, "type": "PipeWire:Interface:Node", "info": {"props": {
+      "node.name": "omni_rec_capture_2026_01_01_0000", "media.class": "Stream/Input/Audio", "object.serial": 600}}},
+
+  {"id": 100, "type": "PipeWire:Interface:Port", "info": {"direction": "input", "props": {"node.id": 40, "port.name": "playback_FL", "audio.channel": "FL"}}},
+  {"id": 101, "type": "PipeWire:Interface:Port", "info": {"direction": "input", "props": {"node.id": 40, "port.name": "playback_FR", "audio.channel": "FR"}}},
+  {"id": 102, "type": "PipeWire:Interface:Port", "info": {"direction": "output", "props": {"node.id": 40, "port.name": "monitor_FL", "audio.channel": "FL", "port.monitor": true}}},
+  {"id": 103, "type": "PipeWire:Interface:Port", "info": {"direction": "output", "props": {"node.id": 40, "port.name": "monitor_FR", "audio.channel": "FR", "port.monitor": true}}},
+
+  {"id": 110, "type": "PipeWire:Interface:Port", "info": {"direction": "output", "props": {"node.id": 41, "port.name": "capture_FR", "audio.channel": "FR"}}},
+  {"id": 111, "type": "PipeWire:Interface:Port", "info": {"direction": "output", "props": {"node.id": 41, "port.name": "capture_FL", "audio.channel": "FL"}}},
+  {"id": 120, "type": "PipeWire:Interface:Port", "info": {"direction": "output", "props": {"node.id": 42, "port.name": "capture_MONO", "audio.channel": "MONO"}}},
+
+  {"id": 130, "type": "PipeWire:Interface:Port", "info": {"direction": "output", "props": {"node.id": 50, "port.name": "output_FL", "audio.channel": "FL"}}},
+  {"id": 131, "type": "PipeWire:Interface:Port", "info": {"direction": "output", "props": {"node.id": 50, "port.name": "output_FR", "audio.channel": "FR"}}},
+  {"id": 132, "type": "PipeWire:Interface:Port", "info": {"direction": "output", "props": {"node.id": 51, "port.name": "output_FL", "audio.channel": "FL"}}},
+  {"id": 133, "type": "PipeWire:Interface:Port", "info": {"direction": "output", "props": {"node.id": 51, "port.name": "output_FR", "audio.channel": "FR"}}},
+  {"id": 134, "type": "PipeWire:Interface:Port", "info": {"direction": "output", "props": {"node.id": 55, "port.name": "output_MONO", "audio.channel": "MONO"}}},
+
+  {"id": 160, "type": "PipeWire:Interface:Port", "info": {"direction": "input", "props": {"node.id": 60, "port.name": "input_AUX0", "audio.channel": "AUX0"}}},
+  {"id": 161, "type": "PipeWire:Interface:Port", "info": {"direction": "input", "props": {"node.id": 60, "port.name": "input_AUX1", "audio.channel": "AUX1"}}},
+  {"id": 162, "type": "PipeWire:Interface:Port", "info": {"direction": "input", "props": {"node.id": 60, "port.name": "input_AUX2", "audio.channel": "AUX2"}}},
+  {"id": 163, "type": "PipeWire:Interface:Port", "info": {"direction": "input", "props": {"node.id": 60, "port.name": "input_AUX3", "audio.channel": "AUX3"}}},
+  {"id": 164, "type": "PipeWire:Interface:Port", "info": {"direction": "input", "props": {"node.id": 60, "port.name": "input_AUX4", "audio.channel": "AUX4"}}},
+  {"id": 165, "type": "PipeWire:Interface:Port", "info": {"direction": "input", "props": {"node.id": 60, "port.name": "input_AUX5", "audio.channel": "AUX5"}}},
+
+  {"id": 200, "type": "PipeWire:Interface:Link", "info": {"output-node-id": 50, "output-port-id": 130, "input-node-id": 40, "input-port-id": 100, "state": "active"}},
+  {"id": 201, "type": "PipeWire:Interface:Link", "info": {"output-node-id": 41, "output-port-id": 111, "input-node-id": 60, "input-port-id": 160, "state": "active"}},
+  {"id": 202, "type": "PipeWire:Interface:Link", "info": null},
+
+  {"id": 300, "type": "PipeWire:Interface:Metadata", "props": {"metadata.name": "default"}, "metadata": [
+      {"subject": 0, "key": "default.audio.sink", "type": "Spa:String:JSON", "value": {"name": "test_sink_main"}},
+      {"subject": 0, "key": "default.audio.source", "type": "Spa:String:JSON", "value": {"name": "test_mic_stereo"}},
+      {"subject": 55, "key": "target.node", "type": "Spa:Id", "value": -1}]},
+  {"id": 301, "type": "PipeWire:Interface:Metadata", "props": {"metadata.name": "settings"}, "metadata": [
+      {"subject": 0, "key": "default.audio.sink", "value": {"name": "WRONG_should_be_ignored"}}]}
+]

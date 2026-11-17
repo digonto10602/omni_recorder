@@ -4,15 +4,31 @@
 [paths]
 records_dir = "records"
 models_dir = "models"
+# Runtime state of a running recording (PIDs, live link status). Project-local.
+runtime_dir = ".tmp/recorder"
 
 [audio]
 sample_rate = 48000
-# Substrings matched against PipeWire stream application names to find Chrome's sound.
-chrome_stream_match = ["Google Chrome", "Chromium", "chrome"]
-# If no Chrome stream is found, record the default output monitor (all system sound).
+# Chrome's sound is found by the PipeWire stream's program file name
+# (application.process.binary), compared exactly, ignoring case.
+# Google Chrome reports "chrome", Arch's Chromium reports "chromium".
+chrome_binaries = ["chrome", "chromium"]
+# Only for streams that report NO program name: substrings of application.name.
+chrome_stream_match = ["Google Chrome"]
+# Never treat these programs as Chrome. Steam's built-in browser calls itself
+# "Chromium" (binary "steamwebhelper") on this machine.
+exclude_binaries = ["steamwebhelper"]
+# Also record the default output's monitor (all system sound). It becomes
+# them.flac only if no Chrome stream is ever found during the recording.
 fallback_to_default_monitor = true
-# "default" means the system default microphone.
+# "default" means the system default microphone (followed if it changes).
 mic_source = "default"
+# Output device whose monitor is the fallback; "default" follows the default output.
+output_monitor = "default"
+# How often (seconds) the recorder re-reads the audio graph to link new Chrome streams.
+poll_interval_s = 0.3
+# Keep the raw 32-bit capture next to the FLAC files (about 4 GB per hour).
+keep_raw_capture = false
 
 [languages]
 allowed = ["bn", "en"]

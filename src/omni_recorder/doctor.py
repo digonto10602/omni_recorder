@@ -127,11 +127,24 @@ def check_models_dir(cfg: Config | None, root: Path) -> Check:
     return Check(WARN, "models dir", f"{d} missing (source scripts/env.sh creates it)")
 
 
-def cleanup_leftovers() -> Check:
-    """HOOK for stage 2 (audio-engineer): remove runtime-only PipeWire objects
-    (links, loopbacks, stray pw-record processes) left behind by a crashed
-    recording, as required by CLAUDE.md rule 5. Currently does nothing."""
-    return Check(OK, "cleanup", "cleanup_leftovers() not implemented yet (stage 2); nothing to clean")
+def cleanup_leftovers(cfg: Config | None = None) -> list[Check]:
+    """Remove runtime-only objects left by a crashed recording (CLAUDE.md rule 5):
+    orphan supervisor / pw-record processes, omni_rec_ PipeWire nodes and their links,
+    then convert unfinished raw captures in records/ to FLAC + meta.json."""
+    from .recorder import cleanup_leftovers as _cleanup
+    if cfg is None:
+        return [Check(WARN, "cleanup", "config not loaded; leftovers not checked")]
+    try:
+        notes = _cleanup(cfg)
+    except Exception as exc:  # report, never crash doctor
+        return [Check(WARN, "cleanup", f"cleanup failed: {type(exc).__name__}: {exc}")]
+    if not notes:
+        return [Check(OK, "cleanup", "no leftover recorder processes, PipeWire objects or unfinished captures")]
+    out = []
+    for n in notes:
+        bad = n.startswith("could not")
+        out.append(Check(WARN if bad else OK, "cleanup", n))
+    return out
 
 
 def run_checks() -> list[Check]:
@@ -149,7 +162,7 @@ def run_checks() -> list[Check]:
     checks.append(cfg_check)
     checks.extend(check_env(root))
     checks.append(check_models_dir(cfg, root))
-    checks.append(cleanup_leftovers())
+    checks.extend(cleanup_leftovers(cfg))
     return checks
 
 

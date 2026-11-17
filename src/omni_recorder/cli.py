@@ -23,17 +23,82 @@ def _not_implemented(command: str, stage: int) -> int:
     return NOT_IMPLEMENTED_EXIT
 
 
+BANNER = "!" * 72
+
+
+def _print_warnings(warnings: list[str]) -> None:
+    if not warnings:
+        return
+    print(BANNER)
+    print(f"!!  {len(warnings)} WARNING(S) - please read:")
+    for w in warnings:
+        print(f"!!  - {w}")
+    print(BANNER)
+
+
 def cmd_start(args: argparse.Namespace) -> int:
     print(CONSENT_REMINDER)
-    return _not_implemented("start (recording)", 2)
+    from .recorder import RecorderError, start_recording, status_details
+    cfg = load_config()
+    try:
+        call_id = start_recording(cfg)
+    except RecorderError as exc:
+        print(f"omni-rec start: {exc}", file=sys.stderr)
+        return 1
+    d = status_details(cfg)
+    print(f"Recording call {call_id}")
+    print(f"  folder:      {d.get('call_dir')}")
+    print(f"  microphone:  {d.get('mic') or 'NOT FOUND (me.flac will be silent until a microphone appears)'}")
+    if d.get("chrome_streams"):
+        for c in d["chrome_streams"]:
+            print(f"  Chrome:      stream {c.get('serial')} from {c.get('application.name')} ({c.get('application.process.binary')})")
+    else:
+        print("  Chrome:      no playback stream yet; it is linked automatically as soon as Chrome plays sound")
+    print(f"  fallback:    {d.get('monitor_sink') or 'disabled'} monitor (used only if Chrome is never found)")
+    print("Stop with: omni-rec stop")
+    return 0
 
 
 def cmd_stop(args: argparse.Namespace) -> int:
-    return _not_implemented("stop", 2)
+    from .recorder import RecorderError, stop_recording
+    import json as _json
+    cfg = load_config()
+    try:
+        call_dir = stop_recording(cfg)
+    except RecorderError as exc:
+        print(f"omni-rec stop: {exc}", file=sys.stderr)
+        return 1
+    meta = _json.loads((call_dir / "meta.json").read_text())
+    print(f"Stopped. Call {meta['call_id']}: {meta['duration_s']:.1f} s, mode: {meta['them_mode']}")
+    for name, f in meta["files"].items():
+        stats = f.get("stats") or {}
+        extra = f", RMS {stats.get('rms_dbfs')} dBFS, active {100 * stats.get('active_fraction', 0):.1f} %" if stats else ""
+        print(f"  {call_dir / name}  ({f['duration_s']:.2f} s{extra})")
+    print(f"  {call_dir / 'meta.json'}")
+    _print_warnings(meta.get("warnings") or [])
+    return 0
 
 
 def cmd_status(args: argparse.Namespace) -> int:
-    return _not_implemented("status", 2)
+    from .recorder import status_details
+    d = status_details(load_config())
+    if not d.get("running") and not d.get("stale"):
+        print("Not recording.")
+        return 0
+    if d.get("stale"):
+        print(f"NOT running, but call {d['call_id']} was interrupted (crash or reboot). "
+              "Run `omni-rec doctor` to clean up and recover its audio.")
+        return 3
+    m, s = divmod(int(d["elapsed_s"]), 60)
+    print(f"Recording call {d['call_id']} for {m} min {s} s (audio written: {d.get('recorded_s')} s)")
+    print(f"  them mode now: {d['them_mode_now']}")
+    print(f"  microphone:    {d.get('mic')}")
+    for c in d.get("chrome_streams") or []:
+        print(f"  Chrome stream: {c.get('serial')} {c.get('application.name')} / {c.get('media.name')}")
+    print(f"  fallback:      {d.get('monitor_sink')}")
+    if d.get("last_error"):
+        print(f"  last error:    {d['last_error']}")
+    return 0
 
 
 def cmd_list(args: argparse.Namespace) -> int:

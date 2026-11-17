@@ -25,15 +25,38 @@ def test_process_flags_parse():
     assert a.call_id == "x" and a.no_translate and a.highlights and a.brief and a.all
 
 
-def test_start_prints_consent_and_exits_2(capsys):
-    assert main(["start"]) == 2
+def _isolated_config(tmp_path, monkeypatch):
+    cfg = tmp_path / "config.toml"
+    cfg.write_text("\n".join(f"[{s}]" for s in ("audio", "languages", "speech", "translation", "llm"))
+                   + f'\n[paths]\nrecords_dir = "{tmp_path / "records"}"\nruntime_dir = "{tmp_path / "rt"}"\n')
+    monkeypatch.setenv("OMNI_CONFIG", str(cfg))
+
+
+def test_start_prints_consent_first(tmp_path, monkeypatch, capsys):
+    """The consent reminder (CLAUDE.md rule 8) is printed before anything else,
+    even when starting fails. No real recording is started here."""
+    _isolated_config(tmp_path, monkeypatch)
+    from omni_recorder import recorder
+
+    def boom(cfg):
+        raise recorder.RecorderError("simulated failure")
+    monkeypatch.setattr(recorder, "start_recording", boom)
+    assert main(["start"]) == 1
     cap = capsys.readouterr()
+    assert cap.out.startswith(CONSENT_REMINDER.strip().splitlines()[0])
     assert "other person must know" in cap.out
-    assert CONSENT_REMINDER.strip().splitlines()[0] in cap.out
-    assert "stage 2" in cap.err
+    assert "simulated failure" in cap.err
 
 
-@pytest.mark.parametrize("cmd,stage", [(["stop"], "2"), (["status"], "2"), (["process", "x"], "3"), (["watch"], "6")])
+def test_status_and_stop_when_idle(tmp_path, monkeypatch, capsys):
+    _isolated_config(tmp_path, monkeypatch)
+    assert main(["status"]) == 0
+    assert "Not recording" in capsys.readouterr().out
+    assert main(["stop"]) == 1
+    assert "no recording is running" in capsys.readouterr().err
+
+
+@pytest.mark.parametrize("cmd,stage", [(["process", "x"], "3"), (["watch"], "6")])
 def test_unbuilt_commands_exit_2(cmd, stage, capsys):
     assert main(cmd) == 2
     assert f"stage {stage}" in capsys.readouterr().err
