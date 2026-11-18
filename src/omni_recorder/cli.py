@@ -129,6 +129,16 @@ def cmd_watch(args: argparse.Namespace) -> int:
     return _not_implemented("watch", 6)
 
 
+def cmd_manual(args: argparse.Namespace) -> int:
+    from .manual import show_manual
+    return show_manual()
+
+
+def cmd_keys(args: argparse.Namespace) -> int:
+    from .manual import show_keys
+    return show_keys(load_config())
+
+
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(prog="omni-rec", description="Local call recorder and script maker (fully offline).")
     p.add_argument("--version", action="version", version=f"omni-rec {__version__}")
@@ -150,6 +160,9 @@ def build_parser() -> argparse.ArgumentParser:
 
     sub.add_parser("doctor", help="check tools, GPU, models; clean leftovers").set_defaults(func=cmd_doctor)
     sub.add_parser("watch", help="(stage 6, optional) auto start/stop on a Chrome call").set_defaults(func=cmd_watch)
+    sub.add_parser("manual", help="read the full manual (docs/MANUAL.md)").set_defaults(func=cmd_manual)
+    sub.add_parser("keys", aliases=["cheatsheet"],
+                   help="show the cheat sheet and whether a recording is running").set_defaults(func=cmd_keys)
     return p
 
 

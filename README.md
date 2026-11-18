@@ -4,7 +4,9 @@ A local call recorder and script maker for Linux (PipeWire audio). It records Fa
 
 Everything runs on your own machine. No cloud speech or language-model service is ever called. The app sets `HF_HUB_OFFLINE=1` (Hugging Face's "never go online" switch) and makes no network calls; the network is used only during setup (Python packages, model files) and for `git push`.
 
-Status: Stage 1 (skeleton). Working now: `omni-rec doctor`, `omni-rec list`, the config file and the privacy check. Recording, transcription, notes, clips and the video brief are built in later stages; their commands say "not implemented until stage N".
+Status: recording works (`start`, `stop`, `status`, `list`, `doctor`, `manual`, `keys`). Transcription, translation, notes, clips and the video brief (`process`, stages 3-5) and `watch` (stage 6) are not built yet; those commands say "not implemented until stage N".
+
+**Full user manual: [docs/MANUAL.md](docs/MANUAL.md)** (or run `omni-rec manual`). One-screen cheat sheet: `omni-rec keys`, or the desktop shortcut Ctrl+Shift+Alt+H.
 
 ## Privacy and consent notice
 
@@ -27,20 +29,19 @@ omni-rec doctor
 ## Commands
 
 ```
-omni-rec start                 # begin recording (prints consent reminder)      [stage 2]
-omni-rec stop                  # stop, finalize files                           [stage 2]
-omni-rec status                # is a recording running?                        [stage 2]
+omni-rec start                 # begin recording (prints consent reminder)
+omni-rec stop                  # stop, finalize files
+omni-rec status                # is a recording running?
 omni-rec list                  # list calls and which steps are done
-omni-rec process <call_id>     # transcribe + translate to English + notes      [stage 3-4]
-        --no-translate         # skip the English translation file
-        --highlights           # also pick and cut interesting parts
-        --brief                # also write the video brief
-        --all                  # everything
-omni-rec doctor                # check tools, GPU, config; clean leftovers
-omni-rec watch                 # optional: auto start/stop on a Chrome call     [stage 6]
+omni-rec process <call_id>     # transcribe + translate + notes      [planned: stage 3-5]
+        --no-translate --highlights --brief --all
+omni-rec doctor                # check tools, GPU, config; clean up after a crash
+omni-rec watch                 # auto start/stop on a Chrome call    [planned: stage 6]
+omni-rec manual                # read the full manual
+omni-rec keys                  # cheat sheet + recording status (alias: cheatsheet)
 ```
 
-Each call lives in `records/<YYYY-MM-DD_HHMM>/` (`_2`, `_3` added if two calls share a minute).
+Each call lives in `records/<YYYY-MM-DD_HHMM>/` (`_2`, `_3` added if two calls share a minute). Every option, output file, warning and fix is explained in [docs/MANUAL.md](docs/MANUAL.md).
 
 ## Configuration
 

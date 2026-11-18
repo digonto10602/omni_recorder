@@ -33,6 +33,10 @@ Everything runs on this machine. No cloud speech or LLM service is ever called.
 
 If a task cannot be done without breaking a rule, stop and ask the user.
 
+**Approved exception to rule 1 (user, 2026-11-17):** one key binding in `~/.config/hypr/bindings.lua` (Ctrl+Shift+Alt+H) that shows the `omni-rec keys` cheat sheet. Nothing else outside the project.
+
+**Manual:** `docs/MANUAL.md` is the full user manual and the cheat sheet (`omni-rec keys`) is its short form. Every stage that adds or changes a command or an output file updates both in the same commit.
+
 ---
 
 ## 2. What the app does (pipeline)
